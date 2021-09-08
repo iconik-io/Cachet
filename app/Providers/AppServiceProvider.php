@@ -39,6 +39,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Dispatcher $dispatcher)
     {
         Schema::defaultStringLength(191);
+        if (getenv('APP_URL')) { 
+            if (strpos(getenv('APP_URL'), 'https') === 0) {
+                \URL::forceScheme('https');
+            } 
+            \URL::forceRootUrl(getenv('APP_URL'));
+        }
 
         $dispatcher->mapUsing(function ($command) {
             return Dispatcher::simpleMapping($command, 'CachetHQ\Cachet\Bus', 'CachetHQ\Cachet\Bus\Handlers');
